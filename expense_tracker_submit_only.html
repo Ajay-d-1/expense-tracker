@@ -1,0 +1,279 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .app { padding: 1rem; font-family: var(--font-sans); }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
+  .title-block h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+  .title-block p { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+  .btn { padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { background: var(--color-background-secondary); }
+  .btn.submit { background: #1D9E75; color: #fff; border-color: #0F6E56; font-weight: 500; padding: 8px 20px; }
+  .btn.submit:hover { background: #0F6E56; }
+  .btn.danger { color: var(--color-text-danger); border-color: var(--color-border-danger); }
+  .btn.danger:hover { background: var(--color-background-danger); }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .meta-field { display: flex; flex-direction: column; gap: 4px; }
+  .meta-field label { font-size: 11px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta-field input { padding: 7px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 13px; background: var(--color-background-primary); color: var(--color-text-primary); }
+  .meta-field input:focus { outline: none; border-color: #1D9E75; box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
+  .table-wrap { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; min-width: 680px; }
+  thead tr { background: #1a4068; }
+  thead th { color: #9FE1CB; font-weight: 500; padding: 10px 8px; text-align: left; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; border-right: 0.5px solid rgba(255,255,255,0.1); }
+  thead th:last-child { border-right: none; }
+  th.c1 { width: 105px; } th.c2 { width: auto; } th.c3 { width: 125px; }
+  th.c4 { width: 95px; } th.c5 { width: 145px; } th.c6 { width: 80px; } th.c7 { width: 36px; }
+  tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--color-background-secondary); }
+  tbody tr.total-row { background: var(--color-background-secondary); border-top: 1px solid var(--color-border-secondary); }
+  tbody td { padding: 2px 3px; vertical-align: middle; }
+  td.total-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-align: right; padding-right: 10px; }
+  td.total-val { font-size: 14px; font-weight: 500; color: #1D9E75; font-family: var(--font-mono); padding: 8px 8px; text-align: right; }
+  .ci { width: 100%; padding: 6px 8px; border: 0.5px solid transparent; border-radius: 4px; font-size: 13px; background: transparent; color: var(--color-text-primary); font-family: var(--font-sans); }
+  .ci:focus { outline: none; border-color: #1D9E75; background: var(--color-background-primary); box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
+  .ci.num { text-align: right; font-family: var(--font-mono); }
+  .row-total { font-family: var(--font-mono); font-size: 13px; color: #1D9E75; text-align: right; padding: 4px 8px; }
+  .del { width: 26px; height: 26px; border-radius: 4px; border: none; background: transparent; color: var(--color-text-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .del:hover { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .add-row { width: 100%; padding: 9px; background: none; border: none; border-top: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .add-row:hover { background: var(--color-background-secondary); color: #1D9E75; }
+  .submit-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; flex-wrap: wrap; gap: 8px; }
+  .hint { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: #085041; color: #9FE1CB; padding: 10px 18px; border-radius: var(--border-radius-md); font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; }
+</style>
+
+<div class="app">
+  <h2 style="position:absolute;width:1px;height:1px;overflow:hidden" aria-hidden="false">Expense Report Tracker</h2>
+
+  <div class="header">
+    <div class="title-block">
+      <h2><i class="ti ti-report-money" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:6px;color:#1D9E75"></i>Expense Report</h2>
+      <p>Fill in your expenses, then click Submit to save &amp; download as .xlsx</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="addRowBtn"><i class="ti ti-plus" aria-hidden="true"></i> Add Row</button>
+      <button class="btn danger" id="clearBtn"><i class="ti ti-trash" aria-hidden="true"></i> Clear All</button>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-field"><label>Group Name</label><input type="text" id="groupName" placeholder="Enter group name"></div>
+    <div class="meta-field"><label>Starting Date</label><input type="date" id="startDate"></div>
+    <div class="meta-field"><label>Ending Date</label><input type="date" id="endDate"></div>
+    <div class="meta-field"><label>Notes / Reference</label><input type="text" id="groupSheet" placeholder="Sheet ref or note"></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="c1">Date</th>
+          <th class="c2">Expense Description</th>
+          <th class="c3">Paid To</th>
+          <th class="c4">Amount ($)</th>
+          <th class="c5">Comments</th>
+          <th class="c6">Total ($)</th>
+          <th class="c7"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <button class="add-row" id="addRowBtn2"><i class="ti ti-plus" aria-hidden="true"></i> Add expense row</button>
+  </div>
+
+  <div class="submit-bar">
+    <p class="hint"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:15px"></i> Submit saves your data AND downloads an .xlsx file to your PC</p>
+    <button class="btn submit" id="submitBtn"><i class="ti ti-device-floppy" aria-hidden="true"></i> Submit &amp; Save</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check" aria-hidden="true"></i> <span id="toastMsg">Saved!</span></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const KEY = 'expense_v3';
+let rows = [];
+
+function newRow() {
+  return { id: Date.now() + Math.random(), date: '', desc: '', paidTo: '', amount: '', comments: '' };
+}
+
+function load() {
+  try {
+    const d = localStorage.getItem(KEY);
+    if (d) {
+      const parsed = JSON.parse(d);
+      rows = parsed.rows || [];
+      document.getElementById('groupName').value = parsed.meta?.groupName || '';
+      document.getElementById('startDate').value = parsed.meta?.startDate || '';
+      document.getElementById('endDate').value = parsed.meta?.endDate || '';
+      document.getElementById('groupSheet').value = parsed.meta?.groupSheet || '';
+    }
+  } catch(e) {}
+  if (rows.length === 0) rows = Array.from({length: 9}, newRow);
+}
+
+function fmtAmt(v) {
+  const n = parseFloat(v);
+  if (isNaN(n) || n === 0) return '$ —';
+  return '$ ' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+
+  // read current values from DOM before re-render
+  tbody.querySelectorAll('tr[data-idx]').forEach(tr => {
+    const idx = parseInt(tr.dataset.idx);
+    if (!rows[idx]) return;
+    tr.querySelectorAll('[data-f]').forEach(el => {
+      rows[idx][el.dataset.f] = el.value;
+    });
+  });
+
+  tbody.innerHTML = '';
+
+  rows.forEach((row, idx) => {
+    const amt = parseFloat(row.amount) || 0;
+    const tr = document.createElement('tr');
+    tr.dataset.idx = idx;
+    tr.innerHTML = `
+      <td><input class="ci" type="date" data-f="date" value="${row.date}"></td>
+      <td><input class="ci" type="text" data-f="desc" placeholder="Description" value="${row.desc}"></td>
+      <td><input class="ci" type="text" data-f="paidTo" placeholder="Paid to" value="${row.paidTo}"></td>
+      <td><input class="ci num" type="number" step="0.01" min="0" data-f="amount" placeholder="0.00" value="${row.amount}"></td>
+      <td><input class="ci" type="text" data-f="comments" placeholder="Comments" value="${row.comments}"></td>
+      <td class="row-total">${fmtAmt(amt)}</td>
+      <td><button class="del" data-idx="${idx}" title="Delete row"><i class="ti ti-x" aria-hidden="true"></i></button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const grand = rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+  const totalTr = document.createElement('tr');
+  totalTr.className = 'total-row';
+  totalTr.innerHTML = `
+    <td colspan="4" class="total-label">Grand Total</td>
+    <td></td>
+    <td class="total-val">${fmtAmt(grand)}</td>
+    <td></td>
+  `;
+  tbody.appendChild(totalTr);
+}
+
+function syncRowsFromDOM() {
+  document.querySelectorAll('#tbody tr[data-idx]').forEach(tr => {
+    const idx = parseInt(tr.dataset.idx);
+    if (!rows[idx]) return;
+    tr.querySelectorAll('[data-f]').forEach(el => {
+      rows[idx][el.dataset.f] = el.value;
+    });
+  });
+}
+
+function getMeta() {
+  return {
+    groupName: document.getElementById('groupName').value,
+    startDate: document.getElementById('startDate').value,
+    endDate: document.getElementById('endDate').value,
+    groupSheet: document.getElementById('groupSheet').value,
+  };
+}
+
+function saveToStorage() {
+  syncRowsFromDOM();
+  localStorage.setItem(KEY, JSON.stringify({ meta: getMeta(), rows }));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function exportXLSX() {
+  syncRowsFromDOM();
+  const meta = getMeta();
+  const wb = XLSX.utils.book_new();
+
+  const sheetData = [
+    ['EXPENSE REPORT'],
+    [],
+    ['Group Name', meta.groupName, '', 'Start Date', meta.startDate, 'End Date', meta.endDate],
+    ['Notes', meta.groupSheet],
+    [],
+    ['Date', 'Expense Description', 'Paid To', 'Amount ($)', 'Comments', 'Total ($)'],
+    ...rows
+      .filter(r => r.date || r.desc || r.paidTo || r.amount || r.comments)
+      .map(r => {
+        const a = parseFloat(r.amount) || 0;
+        return [r.date, r.desc, r.paidTo, a || '', r.comments, a || ''];
+      }),
+    [],
+    ['', '', '', '', 'Grand Total', rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0)]
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+  ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:13},{wch:22},{wch:13}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Expense Report');
+  XLSX.writeFile(wb, 'expense_report.xlsx');
+}
+
+// only update totals column on amount change — no full re-render
+document.getElementById('tbody').addEventListener('input', e => {
+  const el = e.target;
+  if (!el.dataset.f) return;
+  const tr = el.closest('tr[data-idx]');
+  if (!tr) return;
+  const idx = parseInt(tr.dataset.idx);
+  rows[idx][el.dataset.f] = el.value;
+
+  if (el.dataset.f === 'amount') {
+    const totalCell = tr.querySelector('.row-total');
+    if (totalCell) totalCell.textContent = fmtAmt(parseFloat(el.value) || 0);
+    // update grand total
+    const grand = rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+    const gt = document.querySelector('.total-val');
+    if (gt) gt.textContent = fmtAmt(grand);
+  }
+});
+
+document.getElementById('tbody').addEventListener('click', e => {
+  const btn = e.target.closest('.del');
+  if (!btn) return;
+  syncRowsFromDOM();
+  rows.splice(parseInt(btn.dataset.idx), 1);
+  render();
+});
+
+function addRow() {
+  syncRowsFromDOM();
+  rows.push(newRow());
+  render();
+  const allRows = document.querySelectorAll('#tbody tr[data-idx]');
+  allRows[allRows.length - 1]?.querySelector('input')?.focus();
+}
+
+document.getElementById('addRowBtn').addEventListener('click', addRow);
+document.getElementById('addRowBtn2').addEventListener('click', addRow);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (!confirm('Clear all rows? This cannot be undone.')) return;
+  rows = Array.from({length: 9}, newRow);
+  render();
+  showToast('All rows cleared');
+});
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  saveToStorage();
+  exportXLSX();
+  showToast('Saved & downloaded as expense_report.xlsx');
+});
+
+load();
+render();
+</script>
