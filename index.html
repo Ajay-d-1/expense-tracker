@@ -63,35 +63,6 @@
       font-size: 13px;
       color: #888;
     }
-    .project-list {
-      margin-top: 30px;
-      text-align: left;
-    }
-    .project-list h3 {
-      font-size: 14px;
-      text-transform: uppercase;
-      color: #888;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-    .project-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-    .project-item:hover {
-      background: #eef2ff;
-      border-color: #2F5496;
-    }
-    .project-item .name { font-weight: 600; color: #333; font-size: 14px; }
-    .project-item .date { font-size: 12px; color: #888; }
 
     /* ===== MODAL ===== */
     .modal-overlay {
@@ -109,7 +80,7 @@
     .modal {
       background: white;
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       height: 92vh;
       border-radius: 12px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -168,7 +139,7 @@
 
     /* ===== EXPENSE REPORT STYLES ===== */
     .report-container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
       background: white;
       padding: 30px 40px;
@@ -193,15 +164,52 @@
       text-transform: uppercase;
       background: #fff;
       text-align: center;
-      width: 25%;
     }
     .meta-section td {
       border: 1px solid #333;
       padding: 0;
-      height: 36px;
+      height: 40px;
       background: #fff;
+      position: relative;
     }
-    .meta-section input {
+    .meta-section .date-cell {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    .meta-section .date-cell input[type="text"] {
+      flex: 1;
+      height: 100%;
+      border: none;
+      padding: 8px 8px 8px 12px;
+      font-size: 13px;
+      text-align: center;
+      background: transparent;
+      font-family: inherit;
+      color: #333;
+    }
+    .meta-section .date-cell input[type="text"]:focus {
+      outline: 2px solid #4A90E2;
+      background: #fff;
+      position: relative;
+      z-index: 2;
+    }
+    .meta-section .date-cell .calendar-btn {
+      width: 36px;
+      height: 100%;
+      border: none;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #ddd;
+    }
+    .meta-section .date-cell .calendar-btn:hover {
+      background: #e8e8e8;
+    }
+    .meta-section td input[type="text"].plain {
       width: 100%;
       height: 100%;
       border: none;
@@ -212,7 +220,7 @@
       font-family: inherit;
       color: #333;
     }
-    .meta-section input:focus {
+    .meta-section td input[type="text"].plain:focus {
       outline: 2px solid #4A90E2;
       background: #fff;
       position: relative;
@@ -230,26 +238,52 @@
     .expense-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
     .expense-table th {
       border: 1px solid #333;
-      padding: 10px 8px;
+      padding: 10px 6px;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
       background: #2F5496;
       color: #E2EFDA;
       text-align: center;
+      position: relative;
+    }
+    .expense-table th .col-actions {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      display: none;
+    }
+    .expense-table th:hover .col-actions {
+      display: flex;
+      gap: 2px;
+    }
+    .expense-table th .col-actions button {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 10px;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .expense-table th .col-actions button:hover {
+      background: rgba(255,255,255,0.4);
     }
     .expense-table td {
       border: 1px solid #333;
       padding: 0;
-      height: 36px;
+      height: 38px;
       background: #fff;
       position: relative;
     }
-    .expense-table td input {
+    .expense-table td input[type="text"],
+    .expense-table td input[type="number"] {
       width: 100%;
       height: 100%;
       border: none;
@@ -311,6 +345,52 @@
       font-size: 13px;
       text-transform: uppercase;
     }
+    .date-field-wrapper {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+    }
+    .date-field-wrapper input[type="text"] {
+      flex: 1;
+      height: 100%;
+      border: none;
+      padding: 8px 4px 8px 8px;
+      font-size: 13px;
+      text-align: center;
+      background: transparent;
+      font-family: inherit;
+      color: #333;
+    }
+    .date-field-wrapper input[type="text"]:focus {
+      outline: 2px solid #4A90E2;
+      background: #fff;
+      position: relative;
+      z-index: 2;
+    }
+    .date-field-wrapper .calendar-btn {
+      width: 32px;
+      height: 100%;
+      border: none;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+    .date-field-wrapper .calendar-btn:hover {
+      background: #e8e8e8;
+    }
+    .hidden-date-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
 
     .toolbar {
       display: flex;
@@ -339,6 +419,12 @@
       border-color: #2F5496;
     }
     .toolbar button.primary:hover { background: #1e3d6f; }
+    .toolbar button.success {
+      background: #217346;
+      color: white;
+      border-color: #217346;
+    }
+    .toolbar button.success:hover { background: #1a5c38; }
     .save-status {
       margin-left: auto;
       font-size: 13px;
@@ -358,8 +444,66 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
     }
+    .table-actions {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      justify-content: center;
+    }
+    .table-actions button {
+      padding: 8px 20px;
+      border: 1px dashed #2F5496;
+      background: #f0f4ff;
+      color: #2F5496;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .table-actions button:hover {
+      background: #2F5496;
+      color: white;
+      border-style: solid;
+    }
+    .row-num {
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: #999;
+      width: 22px;
+      text-align: right;
+    }
+    .row-delete {
+      position: absolute;
+      right: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: #ffebee;
+      color: #c62828;
+      font-size: 12px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .expense-table tr:hover .row-delete {
+      display: flex;
+    }
+    .row-delete:hover {
+      background: #c62828;
+      color: white;
+    }
   </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -367,12 +511,11 @@
   <div class="dashboard" id="dashboard">
     <div class="dashboard-card">
       <h1>📊 Project Dashboard</h1>
-      <p>Manage your expense reports across all projects. Click below to open your most recent expense report or select a saved one.</p>
+      <p>Manage your expense reports across all projects. Click below to open your most recent expense report.</p>
       <button class="btn-open" onclick="openExpenseReport()">
         📋 Open Expense Report
       </button>
       <div class="last-saved-info" id="lastSavedInfo"></div>
-      <div class="project-list" id="projectList"></div>
     </div>
   </div>
 
@@ -395,6 +538,7 @@
             <button class="primary" onclick="exportToExcel()">📥 Export Excel</button>
             <button onclick="document.getElementById('importFile').click()">📤 Import Excel</button>
             <input type="file" id="importFile" accept=".xlsx,.xls" style="display:none" onchange="importFromExcel(this)">
+            <button class="success" onclick="addColumn()">➕ Add Column</button>
             <button onclick="clearSheet()">🗑️ Clear All</button>
           </div>
 
@@ -412,9 +556,21 @@
             </thead>
             <tbody>
               <tr>
-                <td><input id="meta-group" placeholder="Enter group name" oninput="autoSave()"></td>
-                <td><input id="meta-start" placeholder="XX/XX/XX" oninput="autoSave()"></td>
-                <td><input id="meta-end" placeholder="XX/XX/XX" oninput="autoSave()"></td>
+                <td><input type="text" class="plain" id="meta-group" placeholder="Enter group name" oninput="autoSave()"></td>
+                <td>
+                  <div class="date-cell">
+                    <input type="text" id="meta-start" placeholder="DD/MM/YYYY" oninput="formatDateInput(this); autoSave()" onkeydown="navigateMeta(event, 1)">
+                    <input type="date" class="hidden-date-input" id="meta-start-picker" onchange="onDatePicked(this, 'meta-start')">
+                    <button class="calendar-btn" onclick="openDatePicker('meta-start-picker')" title="Open calendar">📅</button>
+                  </div>
+                </td>
+                <td>
+                  <div class="date-cell">
+                    <input type="text" id="meta-end" placeholder="DD/MM/YYYY" oninput="formatDateInput(this); autoSave()" onkeydown="navigateMeta(event, 2)">
+                    <input type="date" class="hidden-date-input" id="meta-end-picker" onchange="onDatePicked(this, 'meta-end')">
+                    <button class="calendar-btn" onclick="openDatePicker('meta-end-picker')" title="Open calendar">📅</button>
+                  </div>
+                </td>
                 <td class="upload-cell">
                   <input type="file" id="meta-upload" onchange="handleMetaUpload(this)">
                   <label for="meta-upload" class="upload-btn" id="meta-upload-label">📎 Upload</label>
@@ -431,43 +587,71 @@
 
           <!-- Expense Table -->
           <table class="expense-table" id="expenseTable">
-            <thead>
-              <tr>
-                <th style="width:12%">DATE</th>
-                <th style="width:18%">EXPENSE DESCRIPTION</th>
-                <th style="width:15%">PAID TO</th>
-                <th style="width:12%">AMOUNT</th>
-                <th style="width:15%">UPLOAD INV. OR RECEIPT</th>
-                <th style="width:16%">COMMENTS</th>
-                <th style="width:12%">TOTAL</th>
-              </tr>
+            <thead id="tableHead">
+              <!-- Dynamic headers -->
             </thead>
             <tbody id="tableBody"></tbody>
             <tfoot>
               <tr class="total-row">
-                <td colspan="3" class="grand-total-label">GRAND TOTAL</td>
+                <td id="grand-total-cell" colspan="3" class="grand-total-label">GRAND TOTAL</td>
                 <td class="amount-cell">
                   <span class="dollar-prefix">$</span>
-                  <input id="grand-total" readonly value="" tabindex="-1">
+                  <input type="text" id="grand-total" readonly value="" tabindex="-1">
                 </td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td id="grand-total-pad" colspan="3"></td>
               </tr>
             </tfoot>
           </table>
+
+          <div class="table-actions">
+            <button onclick="addRow()">➕ Add Row</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const ROW_COUNT = 10;
+    // ===== CONFIG =====
+    let columns = [
+      { id: 'date', label: 'DATE', width: '12%', type: 'date' },
+      { id: 'desc', label: 'EXPENSE DESCRIPTION', width: '18%', type: 'text' },
+      { id: 'paid', label: 'PAID TO', width: '15%', type: 'text' },
+      { id: 'amount', label: 'AMOUNT', width: '12%', type: 'amount' },
+      { id: 'receipt', label: 'UPLOAD INV. OR RECEIPT', width: '15%', type: 'upload' },
+      { id: 'comment', label: 'COMMENTS', width: '16%', type: 'text' },
+      { id: 'total', label: 'TOTAL', width: '12%', type: 'total' }
+    ];
+    let rows = [];
     let saveTimeout;
     let isSaving = false;
-    const STORAGE_KEY = 'expense_report_v2';
+    const STORAGE_KEY = 'expense_report_v3';
 
-    // ===== DASHBOARD LOGIC =====
+    // ===== DATE FORMATTING =====
+    function formatDateInput(input) {
+      let value = input.value.replace(/\\D/g, '');
+      if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+      if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5, 9);
+      input.value = value;
+    }
+
+    function openDatePicker(pickerId) {
+      const picker = document.getElementById(pickerId);
+      if (picker) picker.showPicker();
+    }
+
+    function onDatePicked(picker, targetId) {
+      const date = new Date(picker.value);
+      if (!isNaN(date)) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        document.getElementById(targetId).value = `${day}/${month}/${year}`;
+        autoSave();
+      }
+    }
+
+    // ===== DASHBOARD =====
     function updateDashboard() {
       const saved = localStorage.getItem(STORAGE_KEY);
       const info = document.getElementById('lastSavedInfo');
@@ -476,13 +660,8 @@
           const data = JSON.parse(saved);
           const meta = data.meta || {};
           const date = data.savedAt ? new Date(data.savedAt).toLocaleString() : 'Unknown';
-          info.innerHTML = `
-            <span style="color:#2F5496;font-weight:600">✓</span> 
-            Most recent: <b>${meta.group || 'Untitled'}</b> — saved ${date}
-          `;
-        } catch (e) {
-          info.textContent = '';
-        }
+          info.innerHTML = `<span style="color:#2F5496;font-weight:600">✓</span> Most recent: <b>${meta.group || 'Untitled'}</b> — saved ${date}`;
+        } catch (e) { info.textContent = ''; }
       } else {
         info.textContent = 'No saved reports yet. Click the button to create one.';
       }
@@ -491,9 +670,7 @@
     function openExpenseReport() {
       document.getElementById('modalOverlay').classList.add('active');
       document.body.style.overflow = 'hidden';
-      // Load most recent data
       loadFromStorage();
-      // Focus first input
       setTimeout(() => document.getElementById('meta-group').focus(), 100);
     }
 
@@ -503,7 +680,6 @@
       updateDashboard();
     }
 
-    // Close on Escape or overlay click
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
         closeExpenseReport();
@@ -513,70 +689,112 @@
       if (e.target === document.getElementById('modalOverlay')) closeExpenseReport();
     });
 
-    // ===== TABLE LOGIC =====
-    function initTable() {
+    // ===== TABLE RENDERING =====
+    function renderHeaders() {
+      const thead = document.getElementById('tableHead');
+      let html = '<tr>';
+      columns.forEach((col, idx) => {
+        const isLast = idx === columns.length - 1;
+        const isAmount = col.type === 'amount';
+        html += `<th style="width:${col.width}" data-col="${col.id}">
+          ${col.label}
+          ${!isLast && col.type !== 'total' ? `
+            <div class="col-actions">
+              <button onclick="removeColumn(${idx})" title="Remove column">×</button>
+            </div>
+          ` : ''}
+        </th>`;
+      });
+      html += '</tr>';
+      thead.innerHTML = html;
+    }
+
+    function renderRows() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
-      for (let i = 0; i < ROW_COUNT; i++) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><input id="date-${i}" placeholder="XX/XX/XX" oninput="autoSave(); calculateTotal()" onkeydown="navigate(event, ${i}, 0)"></td>
-          <td><input id="desc-${i}" placeholder="Enter description" oninput="autoSave()" onkeydown="navigate(event, ${i}, 1)"></td>
-          <td><input id="paid-${i}" placeholder="Enter name" oninput="autoSave()" onkeydown="navigate(event, ${i}, 2)"></td>
-          <td class="amount-cell">
-            <span class="dollar-prefix">$</span>
-            <input id="amount-${i}" placeholder="" class="amount-input" oninput="autoSave(); calculateTotal()" onkeydown="navigate(event, ${i}, 3)" onblur="formatAmount(this)">
-          </td>
-          <td class="upload-cell">
-            <input type="file" id="receipt-${i}" onchange="handleReceiptUpload(this, ${i})" style="display:none">
-            <label for="receipt-${i}" class="upload-btn" id="receipt-label-${i}">📎 Upload</label>
-            <span id="receipt-file-${i}" class="uploaded-file" style="display:none"></span>
-          </td>
-          <td><input id="comment-${i}" placeholder="Add comments" oninput="autoSave()" onkeydown="navigate(event, ${i}, 5)"></td>
-          <td class="amount-cell">
-            <span class="dollar-prefix">$</span>
-            <input id="total-${i}" placeholder="" readonly tabindex="-1">
-          </td>
-        `;
-        tbody.appendChild(row);
+      rows.forEach((row, rowIdx) => {
+        const tr = document.createElement('tr');
+        let html = '';
+        columns.forEach((col, colIdx) => {
+          const value = row[col.id] || '';
+          if (col.type === 'date') {
+            html += `<td>
+              <div class="date-field-wrapper">
+                <input type="text" id="${col.id}-${rowIdx}" placeholder="DD/MM/YYYY" value="${value}" 
+                  oninput="formatDateInput(this); updateCell(${rowIdx}, '${col.id}', this.value); autoSave()" 
+                  onkeydown="navigateTable(event, ${rowIdx}, ${colIdx})">
+                <input type="date" class="hidden-date-input" id="picker-${col.id}-${rowIdx}" 
+                  onchange="onTableDatePicked(this, '${col.id}', ${rowIdx})">
+                <button class="calendar-btn" onclick="openDatePicker('picker-${col.id}-${rowIdx}')" title="Open calendar">📅</button>
+              </div>
+            </td>`;
+          } else if (col.type === 'amount') {
+            html += `<td class="amount-cell">
+              <span class="dollar-prefix">$</span>
+              <input type="text" id="${col.id}-${rowIdx}" placeholder="" value="${value}" 
+                oninput="updateCell(${rowIdx}, '${col.id}', this.value); autoSave(); calculateTotal()" 
+                onkeydown="navigateTable(event, ${rowIdx}, ${colIdx})" 
+                onblur="formatAmount(this); calculateTotal(); autoSave()">
+            </td>`;
+          } else if (col.type === 'upload') {
+            html += `<td class="upload-cell">
+              <input type="file" id="receipt-${rowIdx}" onchange="handleReceiptUpload(this, ${rowIdx})" style="display:none">
+              <label for="receipt-${rowIdx}" class="upload-btn" id="receipt-label-${rowIdx}">📎 Upload</label>
+              <span id="receipt-file-${rowIdx}" class="uploaded-file" style="display:none">${row.receiptName || ''}</span>
+            </td>`;
+          } else if (col.type === 'total') {
+            html += `<td class="amount-cell">
+              <span class="dollar-prefix">$</span>
+              <input type="text" id="total-${rowIdx}" readonly tabindex="-1" value="${value}">
+            </td>`;
+          } else {
+            html += `<td><input type="text" id="${col.id}-${rowIdx}" placeholder="${col.placeholder || ''}" value="${value}" 
+              oninput="updateCell(${rowIdx}, '${col.id}', this.value); autoSave()" 
+              onkeydown="navigateTable(event, ${rowIdx}, ${colIdx})"></td>`;
+          }
+        });
+        html += `<button class="row-delete" onclick="removeRow(${rowIdx})" title="Remove row">×</button>`;
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+      });
+      updateGrandTotalColspan();
+    }
+
+    function updateGrandTotalColspan() {
+      const amountIdx = columns.findIndex(c => c.type === 'amount');
+      const totalIdx = columns.findIndex(c => c.type === 'total');
+      const grandLabel = document.getElementById('grand-total-cell');
+      const grandPad = document.getElementById('grand-total-pad');
+      if (amountIdx !== -1) {
+        grandLabel.colSpan = amountIdx + 1;
+      }
+      if (totalIdx !== -1) {
+        const padCount = columns.length - totalIdx - 1;
+        grandPad.colSpan = Math.max(1, padCount);
       }
     }
 
-    function navigate(e, row, col) {
-      const cols = 6;
-      const rows = ROW_COUNT;
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        if (row < rows - 1) focusCell(row + 1, col);
-        else if (col < cols - 1) focusCell(0, col + 1);
-      }
-      else if (e.key === 'Tab') {
-        if (!e.shiftKey && col < cols - 1) { e.preventDefault(); focusCell(row, col + 1); }
-        else if (e.shiftKey && col > 0) { e.preventDefault(); focusCell(row, col - 1); }
-      }
-      else if (e.key === 'ArrowDown' && row < rows - 1) { e.preventDefault(); focusCell(row + 1, col); }
-      else if (e.key === 'ArrowUp' && row > 0) { e.preventDefault(); focusCell(row - 1, col); }
-      else if (e.key === 'ArrowRight' && col < cols - 1) {
-        const input = e.target;
-        if (input.selectionStart === input.value.length) { e.preventDefault(); focusCell(row, col + 1); }
-      }
-      else if (e.key === 'ArrowLeft' && col > 0) {
-        const input = e.target;
-        if (input.selectionStart === 0) { e.preventDefault(); focusCell(row, col - 1); }
+    function onTableDatePicked(picker, colId, rowIdx) {
+      const date = new Date(picker.value);
+      if (!isNaN(date)) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const formatted = `${day}/${month}/${year}`;
+        document.getElementById(`${colId}-${rowIdx}`).value = formatted;
+        updateCell(rowIdx, colId, formatted);
+        autoSave();
       }
     }
 
-    function focusCell(row, col) {
-      const ids = [`date-${row}`, `desc-${row}`, `paid-${row}`, `amount-${row}`, `receipt-${row}`, `comment-${row}`];
-      const el = document.getElementById(ids[col]);
-      if (el) { el.focus(); el.select(); }
+    function updateCell(rowIdx, colId, value) {
+      rows[rowIdx][colId] = value;
     }
 
     function formatAmount(input) {
       const val = parseFloat(input.value);
       if (!isNaN(val) && input.value.trim() !== '') {
         input.value = val.toFixed(2);
-        autoSave();
       } else if (input.value.trim() === '') {
         input.value = '';
       }
@@ -584,20 +802,143 @@
 
     function calculateTotal() {
       let grandTotal = 0;
-      for (let i = 0; i < ROW_COUNT; i++) {
-        const amountInput = document.getElementById(`amount-${i}`);
-        const totalCell = document.getElementById(`total-${i}`);
-        const val = amountInput.value.trim();
+      const amountCol = columns.find(c => c.type === 'amount');
+      const totalCol = columns.find(c => c.type === 'total');
+      if (!amountCol || !totalCol) return;
+
+      rows.forEach((row, i) => {
+        const val = (row[amountCol.id] || '').trim();
         const amount = val === '' ? 0 : parseFloat(val);
+        const totalInput = document.getElementById(`total-${i}`);
         if (val !== '' && !isNaN(amount) && amount !== 0) {
-          totalCell.value = amount.toFixed(2);
+          row[totalCol.id] = amount.toFixed(2);
+          if (totalInput) totalInput.value = amount.toFixed(2);
           grandTotal += amount;
         } else {
-          totalCell.value = '';
+          row[totalCol.id] = '';
+          if (totalInput) totalInput.value = '';
         }
-      }
+      });
+
       const grandEl = document.getElementById('grand-total');
       grandEl.value = grandTotal > 0 ? grandTotal.toFixed(2) : '';
+    }
+
+    // ===== NAVIGATION =====
+    function navigateTable(e, rowIdx, colIdx) {
+      const colCount = columns.length;
+      const rowCount = rows.length;
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (rowIdx < rowCount - 1) focusTableCell(rowIdx + 1, colIdx);
+        else if (colIdx < colCount - 1) focusTableCell(0, colIdx + 1);
+      }
+      else if (e.key === 'Tab') {
+        if (!e.shiftKey && colIdx < colCount - 1) { e.preventDefault(); focusTableCell(rowIdx, colIdx + 1); }
+        else if (e.shiftKey && colIdx > 0) { e.preventDefault(); focusTableCell(rowIdx, colIdx - 1); }
+      }
+      else if (e.key === 'ArrowDown' && rowIdx < rowCount - 1) { e.preventDefault(); focusTableCell(rowIdx + 1, colIdx); }
+      else if (e.key === 'ArrowUp' && rowIdx > 0) { e.preventDefault(); focusTableCell(rowIdx - 1, colIdx); }
+      else if (e.key === 'ArrowRight' && colIdx < colCount - 1) {
+        const input = e.target;
+        if (input.selectionStart === input.value.length) { e.preventDefault(); focusTableCell(rowIdx, colIdx + 1); }
+      }
+      else if (e.key === 'ArrowLeft' && colIdx > 0) {
+        const input = e.target;
+        if (input.selectionStart === 0) { e.preventDefault(); focusTableCell(rowIdx, colIdx - 1); }
+      }
+    }
+
+    function focusTableCell(rowIdx, colIdx) {
+      const col = columns[colIdx];
+      if (!col) return;
+      let id;
+      if (col.type === 'upload') {
+        // Focus the upload label
+        id = `receipt-label-${rowIdx}`;
+      } else {
+        id = `${col.id}-${rowIdx}`;
+      }
+      const el = document.getElementById(id);
+      if (el) { el.focus(); if (el.select) el.select(); }
+    }
+
+    function navigateMeta(e, idx) {
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        const ids = ['meta-group', 'meta-start', 'meta-end'];
+        const next = e.shiftKey ? idx - 1 : idx + 1;
+        if (next >= 0 && next < ids.length) {
+          document.getElementById(ids[next]).focus();
+        }
+      }
+    }
+
+    // ===== ADD / REMOVE ROWS & COLUMNS =====
+    function addRow() {
+      const newRow = {};
+      columns.forEach(col => { newRow[col.id] = ''; });
+      rows.push(newRow);
+      renderRows();
+      autoSave();
+      // Focus first cell of new row
+      setTimeout(() => {
+        const firstCol = columns[0];
+        if (firstCol) {
+          const el = document.getElementById(`${firstCol.id}-${rows.length - 1}`);
+          if (el) el.focus();
+        }
+      }, 50);
+    }
+
+    function removeRow(idx) {
+      if (rows.length <= 1) {
+        alert('Cannot remove the last row.');
+        return;
+      }
+      rows.splice(idx, 1);
+      renderRows();
+      calculateTotal();
+      autoSave();
+    }
+
+    function addColumn() {
+      const name = prompt('Enter column name:', 'New Column');
+      if (!name) return;
+      // Insert before the TOTAL column (last column)
+      const totalIdx = columns.findIndex(c => c.type === 'total');
+      const insertIdx = totalIdx !== -1 ? totalIdx : columns.length;
+      const newId = 'col_' + Date.now();
+      columns.splice(insertIdx, 0, {
+        id: newId,
+        label: name.toUpperCase(),
+        width: '14%',
+        type: 'text',
+        placeholder: 'Enter ' + name.toLowerCase()
+      });
+      // Add empty value for this column in all rows
+      rows.forEach(row => { row[newId] = ''; });
+      renderHeaders();
+      renderRows();
+      autoSave();
+    }
+
+    function removeColumn(idx) {
+      if (columns.length <= 2) {
+        alert('Cannot remove column. Minimum structure required.');
+        return;
+      }
+      const col = columns[idx];
+      if (col.type === 'amount' || col.type === 'total') {
+        if (!confirm('Removing this column will break the total calculation. Continue?')) return;
+      }
+      columns.splice(idx, 1);
+      // Remove data from rows
+      rows.forEach(row => { delete row[col.id]; });
+      renderHeaders();
+      renderRows();
+      calculateTotal();
+      autoSave();
     }
 
     // ===== AUTO SAVE =====
@@ -623,24 +964,23 @@
           start: document.getElementById('meta-start').value,
           end: document.getElementById('meta-end').value,
         },
-        rows: [],
+        columns: columns,
+        rows: rows,
         savedAt: new Date().toISOString()
       };
-      for (let i = 0; i < ROW_COUNT; i++) {
-        data.rows.push({
-          date: document.getElementById(`date-${i}`).value,
-          desc: document.getElementById(`desc-${i}`).value,
-          paid: document.getElementById(`paid-${i}`).value,
-          amount: document.getElementById(`amount-${i}`).value,
-          comment: document.getElementById(`comment-${i}`).value,
-        });
-      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
     function loadFromStorage() {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return;
+      if (!saved) {
+        // Initialize with default empty rows
+        rows = [];
+        for (let i = 0; i < 5; i++) addRowSilent();
+        renderHeaders();
+        renderRows();
+        return;
+      }
       try {
         const data = JSON.parse(saved);
         if (data.meta) {
@@ -648,19 +988,29 @@
           document.getElementById('meta-start').value = data.meta.start || '';
           document.getElementById('meta-end').value = data.meta.end || '';
         }
-        if (data.rows) {
-          data.rows.forEach((row, i) => {
-            if (i >= ROW_COUNT) return;
-            document.getElementById(`date-${i}`).value = row.date || '';
-            document.getElementById(`desc-${i}`).value = row.desc || '';
-            document.getElementById(`paid-${i}`).value = row.paid || '';
-            document.getElementById(`amount-${i}`).value = row.amount || '';
-            document.getElementById(`comment-${i}`).value = row.comment || '';
-          });
-          calculateTotal();
+        if (data.columns) columns = data.columns;
+        if (data.rows) rows = data.rows;
+        else {
+          rows = [];
+          for (let i = 0; i < 5; i++) addRowSilent();
         }
+        renderHeaders();
+        renderRows();
+        calculateTotal();
         document.getElementById('saveText').textContent = 'Loaded from save';
-      } catch (e) { console.error('Load failed', e); }
+      } catch (e) {
+        console.error('Load failed', e);
+        rows = [];
+        for (let i = 0; i < 5; i++) addRowSilent();
+        renderHeaders();
+        renderRows();
+      }
+    }
+
+    function addRowSilent() {
+      const newRow = {};
+      columns.forEach(col => { newRow[col.id] = ''; });
+      rows.push(newRow);
     }
 
     // ===== UPLOADS =====
@@ -673,12 +1023,14 @@
         autoSave();
       }
     }
-    function handleReceiptUpload(input, index) {
+
+    function handleReceiptUpload(input, rowIdx) {
       if (input.files && input.files[0]) {
-        document.getElementById(`receipt-label-${index}`).style.display = 'none';
-        const fileSpan = document.getElementById(`receipt-file-${index}`);
+        document.getElementById(`receipt-label-${rowIdx}`).style.display = 'none';
+        const fileSpan = document.getElementById(`receipt-file-${rowIdx}`);
         fileSpan.textContent = input.files[0].name;
         fileSpan.style.display = 'inline';
+        rows[rowIdx].receiptName = input.files[0].name;
         autoSave();
       }
     }
@@ -697,30 +1049,45 @@
         ],
         [],
         [],
-        ['EXPENSE DETAILS'],
-        ['DATE', 'EXPENSE DESCRIPTION', 'PAID TO', 'AMOUNT', 'UPLOAD INV. OR RECEIPT', 'COMMENTS', 'TOTAL']
+        ['EXPENSE DETAILS']
       ];
 
-      for (let i = 0; i < ROW_COUNT; i++) {
-        const amountVal = document.getElementById(`amount-${i}`).value.trim();
-        const totalVal = document.getElementById(`total-${i}`).value.trim();
-        data.push([
-          document.getElementById(`date-${i}`).value || '',
-          document.getElementById(`desc-${i}`).value || '',
-          document.getElementById(`paid-${i}`).value || '',
-          amountVal === '' ? '' : (parseFloat(amountVal) || 0),
-          document.getElementById(`receipt-file-${i}`).textContent || '',
-          document.getElementById(`comment-${i}`).value || '',
-          totalVal === '' ? '' : (parseFloat(totalVal) || 0)
-        ]);
-      }
+      // Header row
+      const headerRow = columns.map(c => c.label);
+      data.push(headerRow);
 
+      // Data rows
+      rows.forEach(row => {
+        const rowData = columns.map(col => {
+          if (col.type === 'amount' || col.type === 'total') {
+            const val = (row[col.id] || '').trim();
+            return val === '' ? '' : (parseFloat(val) || 0);
+          }
+          if (col.type === 'upload') {
+            return row.receiptName || '';
+          }
+          return row[col.id] || '';
+        });
+        data.push(rowData);
+      });
+
+      // Grand total
+      const amountCol = columns.find(c => c.type === 'amount');
+      const totalCol = columns.find(c => c.type === 'total');
       const grandVal = document.getElementById('grand-total').value.trim();
-      data.push(['', '', '', '', '', '', '']);
-      data.push(['', '', 'GRAND TOTAL', grandVal === '' ? '' : (parseFloat(grandVal) || 0), '', '', '']);
+      const grandRow = new Array(columns.length).fill('');
+      if (amountCol) {
+        const amountIdx = columns.indexOf(amountCol);
+        grandRow[amountIdx] = grandVal === '' ? '' : (parseFloat(grandVal) || 0);
+      }
+      // Label before amount
+      const labelIdx = amountCol ? Math.max(0, columns.indexOf(amountCol) - 1) : 0;
+      grandRow[labelIdx] = 'GRAND TOTAL';
+      data.push(grandRow);
 
       const ws = XLSX.utils.aoa_to_sheet(data);
-      ws['!cols'] = [{wch: 14}, {wch: 22}, {wch: 18}, {wch: 14}, {wch: 22}, {wch: 20}, {wch: 14}];
+      const colWidths = columns.map(c => ({ wch: parseInt(c.width) * 1.2 || 14 }));
+      ws['!cols'] = colWidths;
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Expense Report');
       XLSX.writeFile(wb, 'Expense-Report.xlsx');
@@ -736,26 +1103,46 @@
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
         clearSheet(false);
+
         if (jsonData[2]) {
           const metaRow = jsonData[3] || [];
           document.getElementById('meta-group').value = metaRow[0] || '';
           document.getElementById('meta-start').value = metaRow[1] || '';
           document.getElementById('meta-end').value = metaRow[2] || '';
         }
-        let dataStart = 7;
-        for (let i = dataStart; i < dataStart + ROW_COUNT; i++) {
-          if (jsonData[i]) {
-            const row = jsonData[i];
-            const idx = i - dataStart;
-            if (idx < ROW_COUNT) {
-              document.getElementById(`date-${idx}`).value = row[0] || '';
-              document.getElementById(`desc-${idx}`).value = row[1] || '';
-              document.getElementById(`paid-${idx}`).value = row[2] || '';
-              document.getElementById(`amount-${idx}`).value = row[3] !== undefined && row[3] !== '' ? String(row[3]) : '';
-              document.getElementById(`comment-${idx}`).value = row[5] || '';
-            }
+
+        // Find the header row (look for "EXPENSE DETAILS" then next row is headers)
+        let headerRowIdx = -1;
+        for (let i = 0; i < jsonData.length; i++) {
+          if (jsonData[i] && jsonData[i][0] === 'DATE') {
+            headerRowIdx = i;
+            break;
           }
         }
+
+        if (headerRowIdx !== -1) {
+          const importedHeaders = jsonData[headerRowIdx] || [];
+          // Reset columns to default but keep structure
+          rows = [];
+          for (let i = headerRowIdx + 1; i < jsonData.length; i++) {
+            const row = jsonData[i];
+            if (!row || row.every(cell => !cell)) continue;
+            // Check if this is the grand total row
+            if (row.some(cell => String(cell).includes('GRAND TOTAL'))) break;
+
+            const newRow = {};
+            importedHeaders.forEach((header, idx) => {
+              const col = columns.find(c => c.label === header);
+              if (col) {
+                const val = row[idx];
+                newRow[col.id] = val !== undefined && val !== null ? String(val) : '';
+              }
+            });
+            rows.push(newRow);
+          }
+        }
+
+        renderRows();
         calculateTotal();
         autoSave();
       };
@@ -770,23 +1157,26 @@
       document.getElementById('meta-end').value = '';
       document.getElementById('meta-upload-label').style.display = 'inline';
       document.getElementById('meta-filename').style.display = 'none';
-      for (let i = 0; i < ROW_COUNT; i++) {
-        document.getElementById(`date-${i}`).value = '';
-        document.getElementById(`desc-${i}`).value = '';
-        document.getElementById(`paid-${i}`).value = '';
-        document.getElementById(`amount-${i}`).value = '';
-        document.getElementById(`comment-${i}`).value = '';
-        document.getElementById(`total-${i}`).value = '';
-        document.getElementById(`receipt-label-${i}`).style.display = 'inline';
-        document.getElementById(`receipt-file-${i}`).style.display = 'none';
-      }
+
+      rows = [];
+      for (let i = 0; i < 5; i++) addRowSilent();
+      renderRows();
       calculateTotal();
       autoSave();
     }
 
     // ===== INIT =====
-    initTable();
+    renderHeaders();
+    rows = [];
+    for (let i = 0; i < 5; i++) addRowSilent();
+    renderRows();
     updateDashboard();
   </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/expense-report-final.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("✅ Final file saved!")
+print(f"📄 Size: {len(html_content)} characters")
