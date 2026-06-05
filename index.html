@@ -1,279 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Expense Report</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
 
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  .app { padding: 1rem; font-family: var(--font-sans); }
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
-  .title-block h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
-  .title-block p { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
-  .btn { padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-  .btn:hover { background: var(--color-background-secondary); }
-  .btn.submit { background: #1D9E75; color: #fff; border-color: #0F6E56; font-weight: 500; padding: 8px 20px; }
-  .btn.submit:hover { background: #0F6E56; }
-  .btn.danger { color: var(--color-text-danger); border-color: var(--color-border-danger); }
-  .btn.danger:hover { background: var(--color-background-danger); }
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .meta-field { display: flex; flex-direction: column; gap: 4px; }
-  .meta-field label { font-size: 11px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-  .meta-field input { padding: 7px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 13px; background: var(--color-background-primary); color: var(--color-text-primary); }
-  .meta-field input:focus { outline: none; border-color: #1D9E75; box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
-  .table-wrap { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; min-width: 680px; }
-  thead tr { background: #1a4068; }
-  thead th { color: #9FE1CB; font-weight: 500; padding: 10px 8px; text-align: left; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; border-right: 0.5px solid rgba(255,255,255,0.1); }
-  thead th:last-child { border-right: none; }
-  th.c1 { width: 105px; } th.c2 { width: auto; } th.c3 { width: 125px; }
-  th.c4 { width: 95px; } th.c5 { width: 145px; } th.c6 { width: 80px; } th.c7 { width: 36px; }
-  tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--color-background-secondary); }
-  tbody tr.total-row { background: var(--color-background-secondary); border-top: 1px solid var(--color-border-secondary); }
-  tbody td { padding: 2px 3px; vertical-align: middle; }
-  td.total-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-align: right; padding-right: 10px; }
-  td.total-val { font-size: 14px; font-weight: 500; color: #1D9E75; font-family: var(--font-mono); padding: 8px 8px; text-align: right; }
-  .ci { width: 100%; padding: 6px 8px; border: 0.5px solid transparent; border-radius: 4px; font-size: 13px; background: transparent; color: var(--color-text-primary); font-family: var(--font-sans); }
-  .ci:focus { outline: none; border-color: #1D9E75; background: var(--color-background-primary); box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
-  .ci.num { text-align: right; font-family: var(--font-mono); }
-  .row-total { font-family: var(--font-mono); font-size: 13px; color: #1D9E75; text-align: right; padding: 4px 8px; }
-  .del { width: 26px; height: 26px; border-radius: 4px; border: none; background: transparent; color: var(--color-text-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .del:hover { background: var(--color-background-danger); color: var(--color-text-danger); }
-  .add-row { width: 100%; padding: 9px; background: none; border: none; border-top: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .add-row:hover { background: var(--color-background-secondary); color: #1D9E75; }
-  .submit-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; flex-wrap: wrap; gap: 8px; }
-  .hint { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
-  .toast { position: fixed; bottom: 20px; right: 20px; background: #085041; color: #9FE1CB; padding: 10px 18px; border-radius: var(--border-radius-md); font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 999; }
-  .toast.show { opacity: 1; }
-</style>
-
-<div class="app">
-  <h2 style="position:absolute;width:1px;height:1px;overflow:hidden" aria-hidden="false">Expense Report Tracker</h2>
-
-  <div class="header">
-    <div class="title-block">
-      <h2><i class="ti ti-report-money" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:6px;color:#1D9E75"></i>Expense Report</h2>
-      <p>Fill in your expenses, then click Submit to save &amp; download as .xlsx</p>
-    </div>
-    <div class="btn-row">
-      <button class="btn" id="addRowBtn"><i class="ti ti-plus" aria-hidden="true"></i> Add Row</button>
-      <button class="btn danger" id="clearBtn"><i class="ti ti-trash" aria-hidden="true"></i> Clear All</button>
-    </div>
-  </div>
-
-  <div class="meta-grid">
-    <div class="meta-field"><label>Group Name</label><input type="text" id="groupName" placeholder="Enter group name"></div>
-    <div class="meta-field"><label>Starting Date</label><input type="date" id="startDate"></div>
-    <div class="meta-field"><label>Ending Date</label><input type="date" id="endDate"></div>
-    <div class="meta-field"><label>Notes / Reference</label><input type="text" id="groupSheet" placeholder="Sheet ref or note"></div>
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th class="c1">Date</th>
-          <th class="c2">Expense Description</th>
-          <th class="c3">Paid To</th>
-          <th class="c4">Amount ($)</th>
-          <th class="c5">Comments</th>
-          <th class="c6">Total ($)</th>
-          <th class="c7"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <button class="add-row" id="addRowBtn2"><i class="ti ti-plus" aria-hidden="true"></i> Add expense row</button>
-  </div>
-
-  <div class="submit-bar">
-    <p class="hint"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:15px"></i> Submit saves your data AND downloads an .xlsx file to your PC</p>
-    <button class="btn submit" id="submitBtn"><i class="ti ti-device-floppy" aria-hidden="true"></i> Submit &amp; Save</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"><i class="ti ti-check" aria-hidden="true"></i> <span id="toastMsg">Saved!</span></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-const KEY = 'expense_v3';
-let rows = [];
-
-function newRow() {
-  return { id: Date.now() + Math.random(), date: '', desc: '', paidTo: '', amount: '', comments: '' };
-}
-
-function load() {
-  try {
-    const d = localStorage.getItem(KEY);
-    if (d) {
-      const parsed = JSON.parse(d);
-      rows = parsed.rows || [];
-      document.getElementById('groupName').value = parsed.meta?.groupName || '';
-      document.getElementById('startDate').value = parsed.meta?.startDate || '';
-      document.getElementById('endDate').value = parsed.meta?.endDate || '';
-      document.getElementById('groupSheet').value = parsed.meta?.groupSheet || '';
+    /* ===== DASHBOARD ===== */
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px;
     }
-  } catch(e) {}
-  if (rows.length === 0) rows = Array.from({length: 9}, newRow);
-}
+    .dashboard-card {
+      background: white;
+      padding: 60px 80px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+    .dashboard-card h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: #1a1a2e;
+    }
+    .dashboard-card p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .dashboard-card .btn-open {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      background: #2F5496;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(47, 84, 150, 0.3);
+    }
+    .dashboard-card .btn-open:hover {
+      background: #1e3d6f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(47, 84, 150, 0.4);
+    }
+    .last-saved-info {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #888;
+    }
+    .project-list {
+      margin-top: 30px;
+      text-align: left;
+    }
+    .project-list h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .project-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .project-item:hover {
+      background: #eef2ff;
+      border-color: #2F5496;
+    }
+    .project-item .name { font-weight: 600; color: #333; font-size: 14px; }
+    .project-item .date { font-size: 12px; color: #888; }
 
-function fmtAmt(v) {
-  const n = parseFloat(v);
-  if (isNaN(n) || n === 0) return '$ —';
-  return '$ ' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-}
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      width: 100%;
+      max-width: 1100px;
+      height: 92vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      flex-shrink: 0;
+    }
+    .modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-header .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #666;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-close:hover { background: #f0f0f0; color: #000; }
+    .modal-body {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      background: #f5f5f5;
+    }
 
-function render() {
-  const tbody = document.getElementById('tbody');
+    /* ===== EXPENSE REPORT STYLES ===== */
+    .report-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #000;
+    }
+    .meta-section {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+    }
+    .meta-section th {
+      border: 1px solid #333;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      background: #fff;
+      text-align: center;
+      width: 25%;
+    }
+    .meta-section td {
+      border: 1px solid #333;
+      padding: 0;
+      height: 36px;
+      background: #fff;
+    }
+    .meta-section input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 8px 12px;
+      font-size: 13px;
+      text-align: center;
+      background: transparent;
+      font-family: inherit;
+      color: #333;
+    }
+    .meta-section input:focus {
+      outline: 2px solid #4A90E2;
+      background: #fff;
+      position: relative;
+      z-index: 2;
+    }
+    .spacer-row { height: 30px; }
+    .section-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .expense-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .expense-table th {
+      border: 1px solid #333;
+      padding: 10px 8px;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      background: #2F5496;
+      color: #E2EFDA;
+      text-align: center;
+    }
+    .expense-table td {
+      border: 1px solid #333;
+      padding: 0;
+      height: 36px;
+      background: #fff;
+      position: relative;
+    }
+    .expense-table td input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 8px 10px;
+      font-size: 13px;
+      text-align: center;
+      background: transparent;
+      font-family: inherit;
+      color: #333;
+    }
+    .expense-table td input:focus {
+      outline: 2px solid #4A90E2;
+      background: #fff;
+      position: relative;
+      z-index: 2;
+    }
+    .expense-table td input::placeholder { color: #bbb; opacity: 1; }
+    .amount-cell { text-align: right !important; }
+    .amount-cell input { text-align: right !important; padding-right: 12px !important; }
+    .dollar-prefix {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: #666;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .amount-cell input { padding-left: 20px !important; }
+    .upload-cell { text-align: center; vertical-align: middle; }
+    .upload-cell input[type="file"] { display: none; }
+    .upload-btn {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #555;
+    }
+    .upload-btn:hover { background: #e0e0e0; }
+    .uploaded-file {
+      font-size: 11px;
+      color: #2F5496;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .total-row td { background: #f8f9fa; font-weight: 600; }
+    .total-row input { font-weight: 600; background: #f8f9fa !important; }
+    .grand-total-label {
+      text-align: right;
+      padding-right: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
 
-  // read current values from DOM before re-render
-  tbody.querySelectorAll('tr[data-idx]').forEach(tr => {
-    const idx = parseInt(tr.dataset.idx);
-    if (!rows[idx]) return;
-    tr.querySelectorAll('[data-f]').forEach(el => {
-      rows[idx][el.dataset.f] = el.value;
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .toolbar button {
+      padding: 8px 16px;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toolbar button:hover { background: #f5f5f5; border-color: #999; }
+    .toolbar button.primary {
+      background: #2F5496;
+      color: white;
+      border-color: #2F5496;
+    }
+    .toolbar button.primary:hover { background: #1e3d6f; }
+    .save-status {
+      margin-left: auto;
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .saving-dot {
+      width: 8px;
+      height: 8px;
+      background: #2F5496;
+      border-radius: 50%;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="dashboard" id="dashboard">
+    <div class="dashboard-card">
+      <h1>📊 Project Dashboard</h1>
+      <p>Manage your expense reports across all projects. Click below to open your most recent expense report or select a saved one.</p>
+      <button class="btn-open" onclick="openExpenseReport()">
+        📋 Open Expense Report
+      </button>
+      <div class="last-saved-info" id="lastSavedInfo"></div>
+      <div class="project-list" id="projectList"></div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>💰 Expense Report Editor</h2>
+        <div class="header-actions">
+          <span class="save-status" id="modalSaveStatus">
+            <span id="saveIndicator"></span>
+            <span id="saveText">Ready</span>
+          </span>
+          <button class="btn-close" onclick="closeExpenseReport()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="report-container">
+          <div class="toolbar">
+            <button class="primary" onclick="exportToExcel()">📥 Export Excel</button>
+            <button onclick="document.getElementById('importFile').click()">📤 Import Excel</button>
+            <input type="file" id="importFile" accept=".xlsx,.xls" style="display:none" onchange="importFromExcel(this)">
+            <button onclick="clearSheet()">🗑️ Clear All</button>
+          </div>
+
+          <div class="title">Expense Report</div>
+
+          <!-- Meta Section -->
+          <table class="meta-section">
+            <thead>
+              <tr>
+                <th>GROUP NAME</th>
+                <th>STARTING DATE</th>
+                <th>ENDING DATE</th>
+                <th>UPLOAD GROUP SHEET</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input id="meta-group" placeholder="Enter group name" oninput="autoSave()"></td>
+                <td><input id="meta-start" placeholder="XX/XX/XX" oninput="autoSave()"></td>
+                <td><input id="meta-end" placeholder="XX/XX/XX" oninput="autoSave()"></td>
+                <td class="upload-cell">
+                  <input type="file" id="meta-upload" onchange="handleMetaUpload(this)">
+                  <label for="meta-upload" class="upload-btn" id="meta-upload-label">📎 Upload</label>
+                  <span id="meta-filename" class="uploaded-file" style="display:none"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="spacer-row"></div>
+          <div class="spacer-row"></div>
+
+          <div class="section-title">EXPENSE DETAILS</div>
+
+          <!-- Expense Table -->
+          <table class="expense-table" id="expenseTable">
+            <thead>
+              <tr>
+                <th style="width:12%">DATE</th>
+                <th style="width:18%">EXPENSE DESCRIPTION</th>
+                <th style="width:15%">PAID TO</th>
+                <th style="width:12%">AMOUNT</th>
+                <th style="width:15%">UPLOAD INV. OR RECEIPT</th>
+                <th style="width:16%">COMMENTS</th>
+                <th style="width:12%">TOTAL</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="3" class="grand-total-label">GRAND TOTAL</td>
+                <td class="amount-cell">
+                  <span class="dollar-prefix">$</span>
+                  <input id="grand-total" readonly value="" tabindex="-1">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROW_COUNT = 10;
+    let saveTimeout;
+    let isSaving = false;
+    const STORAGE_KEY = 'expense_report_v2';
+
+    // ===== DASHBOARD LOGIC =====
+    function updateDashboard() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const info = document.getElementById('lastSavedInfo');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          const meta = data.meta || {};
+          const date = data.savedAt ? new Date(data.savedAt).toLocaleString() : 'Unknown';
+          info.innerHTML = `
+            <span style="color:#2F5496;font-weight:600">✓</span> 
+            Most recent: <b>${meta.group || 'Untitled'}</b> — saved ${date}
+          `;
+        } catch (e) {
+          info.textContent = '';
+        }
+      } else {
+        info.textContent = 'No saved reports yet. Click the button to create one.';
+      }
+    }
+
+    function openExpenseReport() {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      // Load most recent data
+      loadFromStorage();
+      // Focus first input
+      setTimeout(() => document.getElementById('meta-group').focus(), 100);
+    }
+
+    function closeExpenseReport() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      updateDashboard();
+    }
+
+    // Close on Escape or overlay click
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
+        closeExpenseReport();
+      }
     });
-  });
-
-  tbody.innerHTML = '';
-
-  rows.forEach((row, idx) => {
-    const amt = parseFloat(row.amount) || 0;
-    const tr = document.createElement('tr');
-    tr.dataset.idx = idx;
-    tr.innerHTML = `
-      <td><input class="ci" type="date" data-f="date" value="${row.date}"></td>
-      <td><input class="ci" type="text" data-f="desc" placeholder="Description" value="${row.desc}"></td>
-      <td><input class="ci" type="text" data-f="paidTo" placeholder="Paid to" value="${row.paidTo}"></td>
-      <td><input class="ci num" type="number" step="0.01" min="0" data-f="amount" placeholder="0.00" value="${row.amount}"></td>
-      <td><input class="ci" type="text" data-f="comments" placeholder="Comments" value="${row.comments}"></td>
-      <td class="row-total">${fmtAmt(amt)}</td>
-      <td><button class="del" data-idx="${idx}" title="Delete row"><i class="ti ti-x" aria-hidden="true"></i></button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  const grand = rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
-  const totalTr = document.createElement('tr');
-  totalTr.className = 'total-row';
-  totalTr.innerHTML = `
-    <td colspan="4" class="total-label">Grand Total</td>
-    <td></td>
-    <td class="total-val">${fmtAmt(grand)}</td>
-    <td></td>
-  `;
-  tbody.appendChild(totalTr);
-}
-
-function syncRowsFromDOM() {
-  document.querySelectorAll('#tbody tr[data-idx]').forEach(tr => {
-    const idx = parseInt(tr.dataset.idx);
-    if (!rows[idx]) return;
-    tr.querySelectorAll('[data-f]').forEach(el => {
-      rows[idx][el.dataset.f] = el.value;
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modalOverlay')) closeExpenseReport();
     });
-  });
-}
 
-function getMeta() {
-  return {
-    groupName: document.getElementById('groupName').value,
-    startDate: document.getElementById('startDate').value,
-    endDate: document.getElementById('endDate').value,
-    groupSheet: document.getElementById('groupSheet').value,
-  };
-}
+    // ===== TABLE LOGIC =====
+    function initTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      for (let i = 0; i < ROW_COUNT; i++) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input id="date-${i}" placeholder="XX/XX/XX" oninput="autoSave(); calculateTotal()" onkeydown="navigate(event, ${i}, 0)"></td>
+          <td><input id="desc-${i}" placeholder="Enter description" oninput="autoSave()" onkeydown="navigate(event, ${i}, 1)"></td>
+          <td><input id="paid-${i}" placeholder="Enter name" oninput="autoSave()" onkeydown="navigate(event, ${i}, 2)"></td>
+          <td class="amount-cell">
+            <span class="dollar-prefix">$</span>
+            <input id="amount-${i}" placeholder="" class="amount-input" oninput="autoSave(); calculateTotal()" onkeydown="navigate(event, ${i}, 3)" onblur="formatAmount(this)">
+          </td>
+          <td class="upload-cell">
+            <input type="file" id="receipt-${i}" onchange="handleReceiptUpload(this, ${i})" style="display:none">
+            <label for="receipt-${i}" class="upload-btn" id="receipt-label-${i}">📎 Upload</label>
+            <span id="receipt-file-${i}" class="uploaded-file" style="display:none"></span>
+          </td>
+          <td><input id="comment-${i}" placeholder="Add comments" oninput="autoSave()" onkeydown="navigate(event, ${i}, 5)"></td>
+          <td class="amount-cell">
+            <span class="dollar-prefix">$</span>
+            <input id="total-${i}" placeholder="" readonly tabindex="-1">
+          </td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
 
-function saveToStorage() {
-  syncRowsFromDOM();
-  localStorage.setItem(KEY, JSON.stringify({ meta: getMeta(), rows }));
-}
+    function navigate(e, row, col) {
+      const cols = 6;
+      const rows = ROW_COUNT;
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (row < rows - 1) focusCell(row + 1, col);
+        else if (col < cols - 1) focusCell(0, col + 1);
+      }
+      else if (e.key === 'Tab') {
+        if (!e.shiftKey && col < cols - 1) { e.preventDefault(); focusCell(row, col + 1); }
+        else if (e.shiftKey && col > 0) { e.preventDefault(); focusCell(row, col - 1); }
+      }
+      else if (e.key === 'ArrowDown' && row < rows - 1) { e.preventDefault(); focusCell(row + 1, col); }
+      else if (e.key === 'ArrowUp' && row > 0) { e.preventDefault(); focusCell(row - 1, col); }
+      else if (e.key === 'ArrowRight' && col < cols - 1) {
+        const input = e.target;
+        if (input.selectionStart === input.value.length) { e.preventDefault(); focusCell(row, col + 1); }
+      }
+      else if (e.key === 'ArrowLeft' && col > 0) {
+        const input = e.target;
+        if (input.selectionStart === 0) { e.preventDefault(); focusCell(row, col - 1); }
+      }
+    }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+    function focusCell(row, col) {
+      const ids = [`date-${row}`, `desc-${row}`, `paid-${row}`, `amount-${row}`, `receipt-${row}`, `comment-${row}`];
+      const el = document.getElementById(ids[col]);
+      if (el) { el.focus(); el.select(); }
+    }
 
-function exportXLSX() {
-  syncRowsFromDOM();
-  const meta = getMeta();
-  const wb = XLSX.utils.book_new();
+    function formatAmount(input) {
+      const val = parseFloat(input.value);
+      if (!isNaN(val) && input.value.trim() !== '') {
+        input.value = val.toFixed(2);
+        autoSave();
+      } else if (input.value.trim() === '') {
+        input.value = '';
+      }
+    }
 
-  const sheetData = [
-    ['EXPENSE REPORT'],
-    [],
-    ['Group Name', meta.groupName, '', 'Start Date', meta.startDate, 'End Date', meta.endDate],
-    ['Notes', meta.groupSheet],
-    [],
-    ['Date', 'Expense Description', 'Paid To', 'Amount ($)', 'Comments', 'Total ($)'],
-    ...rows
-      .filter(r => r.date || r.desc || r.paidTo || r.amount || r.comments)
-      .map(r => {
-        const a = parseFloat(r.amount) || 0;
-        return [r.date, r.desc, r.paidTo, a || '', r.comments, a || ''];
-      }),
-    [],
-    ['', '', '', '', 'Grand Total', rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0)]
-  ];
+    function calculateTotal() {
+      let grandTotal = 0;
+      for (let i = 0; i < ROW_COUNT; i++) {
+        const amountInput = document.getElementById(`amount-${i}`);
+        const totalCell = document.getElementById(`total-${i}`);
+        const val = amountInput.value.trim();
+        const amount = val === '' ? 0 : parseFloat(val);
+        if (val !== '' && !isNaN(amount) && amount !== 0) {
+          totalCell.value = amount.toFixed(2);
+          grandTotal += amount;
+        } else {
+          totalCell.value = '';
+        }
+      }
+      const grandEl = document.getElementById('grand-total');
+      grandEl.value = grandTotal > 0 ? grandTotal.toFixed(2) : '';
+    }
 
-  const ws = XLSX.utils.aoa_to_sheet(sheetData);
-  ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:13},{wch:22},{wch:13}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Expense Report');
-  XLSX.writeFile(wb, 'expense_report.xlsx');
-}
+    // ===== AUTO SAVE =====
+    function autoSave() {
+      const indicator = document.getElementById('saveIndicator');
+      const text = document.getElementById('saveText');
+      indicator.innerHTML = '<span class="saving-dot"></span>';
+      text.textContent = 'Saving...';
+      isSaving = true;
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        saveToStorage();
+        indicator.innerHTML = '';
+        text.textContent = 'Saved ' + new Date().toLocaleTimeString();
+        isSaving = false;
+      }, 1200);
+    }
 
-// only update totals column on amount change — no full re-render
-document.getElementById('tbody').addEventListener('input', e => {
-  const el = e.target;
-  if (!el.dataset.f) return;
-  const tr = el.closest('tr[data-idx]');
-  if (!tr) return;
-  const idx = parseInt(tr.dataset.idx);
-  rows[idx][el.dataset.f] = el.value;
+    function saveToStorage() {
+      const data = {
+        meta: {
+          group: document.getElementById('meta-group').value,
+          start: document.getElementById('meta-start').value,
+          end: document.getElementById('meta-end').value,
+        },
+        rows: [],
+        savedAt: new Date().toISOString()
+      };
+      for (let i = 0; i < ROW_COUNT; i++) {
+        data.rows.push({
+          date: document.getElementById(`date-${i}`).value,
+          desc: document.getElementById(`desc-${i}`).value,
+          paid: document.getElementById(`paid-${i}`).value,
+          amount: document.getElementById(`amount-${i}`).value,
+          comment: document.getElementById(`comment-${i}`).value,
+        });
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
 
-  if (el.dataset.f === 'amount') {
-    const totalCell = tr.querySelector('.row-total');
-    if (totalCell) totalCell.textContent = fmtAmt(parseFloat(el.value) || 0);
-    // update grand total
-    const grand = rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
-    const gt = document.querySelector('.total-val');
-    if (gt) gt.textContent = fmtAmt(grand);
-  }
-});
+    function loadFromStorage() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      try {
+        const data = JSON.parse(saved);
+        if (data.meta) {
+          document.getElementById('meta-group').value = data.meta.group || '';
+          document.getElementById('meta-start').value = data.meta.start || '';
+          document.getElementById('meta-end').value = data.meta.end || '';
+        }
+        if (data.rows) {
+          data.rows.forEach((row, i) => {
+            if (i >= ROW_COUNT) return;
+            document.getElementById(`date-${i}`).value = row.date || '';
+            document.getElementById(`desc-${i}`).value = row.desc || '';
+            document.getElementById(`paid-${i}`).value = row.paid || '';
+            document.getElementById(`amount-${i}`).value = row.amount || '';
+            document.getElementById(`comment-${i}`).value = row.comment || '';
+          });
+          calculateTotal();
+        }
+        document.getElementById('saveText').textContent = 'Loaded from save';
+      } catch (e) { console.error('Load failed', e); }
+    }
 
-document.getElementById('tbody').addEventListener('click', e => {
-  const btn = e.target.closest('.del');
-  if (!btn) return;
-  syncRowsFromDOM();
-  rows.splice(parseInt(btn.dataset.idx), 1);
-  render();
-});
+    // ===== UPLOADS =====
+    function handleMetaUpload(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('meta-upload-label').style.display = 'none';
+        const fileSpan = document.getElementById('meta-filename');
+        fileSpan.textContent = input.files[0].name;
+        fileSpan.style.display = 'inline';
+        autoSave();
+      }
+    }
+    function handleReceiptUpload(input, index) {
+      if (input.files && input.files[0]) {
+        document.getElementById(`receipt-label-${index}`).style.display = 'none';
+        const fileSpan = document.getElementById(`receipt-file-${index}`);
+        fileSpan.textContent = input.files[0].name;
+        fileSpan.style.display = 'inline';
+        autoSave();
+      }
+    }
 
-function addRow() {
-  syncRowsFromDOM();
-  rows.push(newRow());
-  render();
-  const allRows = document.querySelectorAll('#tbody tr[data-idx]');
-  allRows[allRows.length - 1]?.querySelector('input')?.focus();
-}
+    // ===== EXPORT / IMPORT =====
+    function exportToExcel() {
+      const data = [
+        ['Expense Report'],
+        [],
+        ['GROUP NAME', 'STARTING DATE', 'ENDING DATE', 'UPLOAD GROUP SHEET'],
+        [
+          document.getElementById('meta-group').value,
+          document.getElementById('meta-start').value,
+          document.getElementById('meta-end').value,
+          document.getElementById('meta-filename').textContent || ''
+        ],
+        [],
+        [],
+        ['EXPENSE DETAILS'],
+        ['DATE', 'EXPENSE DESCRIPTION', 'PAID TO', 'AMOUNT', 'UPLOAD INV. OR RECEIPT', 'COMMENTS', 'TOTAL']
+      ];
 
-document.getElementById('addRowBtn').addEventListener('click', addRow);
-document.getElementById('addRowBtn2').addEventListener('click', addRow);
+      for (let i = 0; i < ROW_COUNT; i++) {
+        const amountVal = document.getElementById(`amount-${i}`).value.trim();
+        const totalVal = document.getElementById(`total-${i}`).value.trim();
+        data.push([
+          document.getElementById(`date-${i}`).value || '',
+          document.getElementById(`desc-${i}`).value || '',
+          document.getElementById(`paid-${i}`).value || '',
+          amountVal === '' ? '' : (parseFloat(amountVal) || 0),
+          document.getElementById(`receipt-file-${i}`).textContent || '',
+          document.getElementById(`comment-${i}`).value || '',
+          totalVal === '' ? '' : (parseFloat(totalVal) || 0)
+        ]);
+      }
 
-document.getElementById('clearBtn').addEventListener('click', () => {
-  if (!confirm('Clear all rows? This cannot be undone.')) return;
-  rows = Array.from({length: 9}, newRow);
-  render();
-  showToast('All rows cleared');
-});
+      const grandVal = document.getElementById('grand-total').value.trim();
+      data.push(['', '', '', '', '', '', '']);
+      data.push(['', '', 'GRAND TOTAL', grandVal === '' ? '' : (parseFloat(grandVal) || 0), '', '', '']);
 
-document.getElementById('submitBtn').addEventListener('click', () => {
-  saveToStorage();
-  exportXLSX();
-  showToast('Saved & downloaded as expense_report.xlsx');
-});
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      ws['!cols'] = [{wch: 14}, {wch: 22}, {wch: 18}, {wch: 14}, {wch: 22}, {wch: 20}, {wch: 14}];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Expense Report');
+      XLSX.writeFile(wb, 'Expense-Report.xlsx');
+    }
 
-load();
-render();
-</script>
+    function importFromExcel(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        clearSheet(false);
+        if (jsonData[2]) {
+          const metaRow = jsonData[3] || [];
+          document.getElementById('meta-group').value = metaRow[0] || '';
+          document.getElementById('meta-start').value = metaRow[1] || '';
+          document.getElementById('meta-end').value = metaRow[2] || '';
+        }
+        let dataStart = 7;
+        for (let i = dataStart; i < dataStart + ROW_COUNT; i++) {
+          if (jsonData[i]) {
+            const row = jsonData[i];
+            const idx = i - dataStart;
+            if (idx < ROW_COUNT) {
+              document.getElementById(`date-${idx}`).value = row[0] || '';
+              document.getElementById(`desc-${idx}`).value = row[1] || '';
+              document.getElementById(`paid-${idx}`).value = row[2] || '';
+              document.getElementById(`amount-${idx}`).value = row[3] !== undefined && row[3] !== '' ? String(row[3]) : '';
+              document.getElementById(`comment-${idx}`).value = row[5] || '';
+            }
+          }
+        }
+        calculateTotal();
+        autoSave();
+      };
+      reader.readAsArrayBuffer(file);
+      input.value = '';
+    }
+
+    function clearSheet(confirmDialog = true) {
+      if (confirmDialog && !window.confirm('Clear all data? This cannot be undone.')) return;
+      document.getElementById('meta-group').value = '';
+      document.getElementById('meta-start').value = '';
+      document.getElementById('meta-end').value = '';
+      document.getElementById('meta-upload-label').style.display = 'inline';
+      document.getElementById('meta-filename').style.display = 'none';
+      for (let i = 0; i < ROW_COUNT; i++) {
+        document.getElementById(`date-${i}`).value = '';
+        document.getElementById(`desc-${i}`).value = '';
+        document.getElementById(`paid-${i}`).value = '';
+        document.getElementById(`amount-${i}`).value = '';
+        document.getElementById(`comment-${i}`).value = '';
+        document.getElementById(`total-${i}`).value = '';
+        document.getElementById(`receipt-label-${i}`).style.display = 'inline';
+        document.getElementById(`receipt-file-${i}`).style.display = 'none';
+      }
+      calculateTotal();
+      autoSave();
+    }
+
+    // ===== INIT =====
+    initTable();
+    updateDashboard();
+  </script>
+</body>
+</html>
